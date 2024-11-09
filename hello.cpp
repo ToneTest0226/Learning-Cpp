@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <memory>
 #include <any>
+#include <string> 
 // main is trash
 using namespace std;
 
@@ -11,6 +12,7 @@ int f;
 int s;
 int& X = x;
 int& Y = y;
+int* ptr2 = new int(10);
 
 
 int test(){
@@ -74,16 +76,20 @@ class testclass {
   void setXandY() {
     cout << "X:";
     cin >> x;
-    cout << "Y:" << endl;
+    cout << "Y:";
     cin >> y;
   };
   
   void reftest() {
-    cout << "Refs are: " << "X:" << X << " and " << "Y:" << Y << endl;
+    cout << endl << "Refs are: " << "X:" << X << " and " << "Y:" << Y << endl;
   };
+  void printb4del() {
+    cout << "Before:" << *ptr2 << endl;
+    delete ptr2;
+    ptr2 = nullptr;
+};
 
  };
-
 
 // trash
 int main(){
@@ -107,6 +113,8 @@ sleep(1);
 obj.setXandY();
 sleep(1);
 obj.reftest();
+sleep(1);
+obj.printb4del();
 sleep(1);
 cout << endl << "=== end ===" << endl;
 return(0);
