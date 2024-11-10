@@ -1,9 +1,11 @@
+#include "newndel.h" 
 #include <iostream>
 #include <unistd.h>
 #include <memory>
 #include <any>
 #include <string> 
-// main is trash
+
+// main is trash, like bad actually
 using namespace std;
 
 int x;
@@ -115,6 +117,9 @@ sleep(1);
 obj.reftest();
 sleep(1);
 obj.printb4del();
+sleep(1);
+NewNDel::newndelt();
+NewNDel::newsub();
 sleep(1);
 cout << endl << "=== end ===" << endl;
 return(0);
