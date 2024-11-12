@@ -5,6 +5,7 @@
 #include <string> 
 #include <cstdlib>
 // chatgpt helped me make this concept, im doing it but it def did help with the idea.
+// better looking code, just copied the includes for from the other file lmao, but i dont care it works.
 double xx;
 double yy;
 int z;
