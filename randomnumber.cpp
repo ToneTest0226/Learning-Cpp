@@ -10,21 +10,22 @@
 
 
 double money = 100;
-int cycleamnt = 10;
-int guessnum;
+int cycleamnt = 20;
+double guessnum;
 
 int guess(){
-  std::cout << "Take a guess" << '\n';
+  std::cout << "Take a guess:";
   std::cin >> guessnum;
-  return std::round(guessnum);
-  Gamble::randomnum();
-    return 0;
+  std::round(guessnum);
+  Gamble::randomnum();  
+  return 0;
  }
 
 int distance();
 
 
 int main(){
-guess();    
+guess();  
+std::cout << money;
 return 0;
 }

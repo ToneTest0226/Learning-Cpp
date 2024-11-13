@@ -15,17 +15,23 @@ class Gamble{
 public:
 
 static int randomnum(){
-    money - 10;
+ money -= 10;
  do{
-  usleep(500000);
+  usleep(340000);
   system("clear");
   srand(time(0));
   randomnumber = rand() % 100 + 1;
   std::cout << randomnumber << '\n';
   --cycleamnt;
   } while(cycleamnt != 0);
+
  return 0;
 };
+
+
+};
+
+class Tutorial{
 
 
 
