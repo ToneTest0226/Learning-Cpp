@@ -7,32 +7,34 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-int randomnumber;
+double randomnumber;
 extern double money;   
 extern int cycleamnt;
-class Gamble{
+extern double guessnum;
+extern double abdistance;
 
-public:
+class Gamble{
+ public:
+
+static int distance(){
+     abdistance = std::abs(randomnumber - guessnum);
+     return(0);
+};
+
 
 static int randomnum(){
- money -= 10;
+   money -= 10; 
+   srand(time(0));
  do{
-  usleep(340000);
-  system("clear");
-  srand(time(0));
+  usleep(230000);
   randomnumber = rand() % 100 + 1;
-  std::cout << randomnumber << '\n';
+  std::cout << '\r' << randomnumber << std::flush;
   --cycleamnt;
   } while(cycleamnt != 0);
-
+   distance();
  return 0;
 };
 
 
 };
 
-class Tutorial{
-
-
-
-};

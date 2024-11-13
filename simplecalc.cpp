@@ -45,6 +45,7 @@ int choose(){
     break;
 
     default:
+    system("clear");
     std::cout << "Selection not known, choose again" << '\n';
     choose();
     break;
