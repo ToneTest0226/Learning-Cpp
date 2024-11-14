@@ -8,12 +8,44 @@
 #include <cstdlib>
 #include <bits/stdc++.h>
 #include <cmath>
+#include <ncurses.h>
 
 int StartAns;
 double money = 100;
 int cycleamnt = 20;
 double abdistance;
 double guessnum;
+ 
+void guess();
+
+int menu(){
+  int* menuans; 
+  menuans = new int;
+  std::cout << "What would you like to do?" << "\n1: Gamble" << "\n2: Double for double" << "\n0: Exit" <<"\n Select:" << std::flush;
+  std::cin >> *menuans;
+  switch(*menuans){
+   case 1:
+   guess();
+   break;
+
+   case 2:
+    std::cout << "Not done!" << std::endl;
+    menu();
+   break;
+
+   case 0:
+    exit(0);
+   break;
+
+   default:
+   system("clear");
+   std::cout << "Not known!\n";
+   usleep(230000);
+   system("clear");
+   menu();
+  }  
+  return(0);
+}
 
 void guess(){
   std::cout << "Take a guess from 1-100:";
@@ -31,6 +63,10 @@ if(guessnum >= 100){
   }
 }
 
+int tutorialwin(){
+     std::cout << '\n' << "You won!\n" << "You win $100 everythime you get the number.\n" << "You get more money the closer you are to it.\nIf you get the number, jackpot!" << std::endl;
+     return(0);
+}
 class MenuStart{
 public:
 
@@ -41,16 +77,23 @@ static int Startmenu(){
  switch(StartAns){
    case 1:
    Tutorial::tutorialstart();
+   money += 100;
+   tutorialwin(); 
    break;
 
    case 2:
-    guess();
+    menu();
    break;
 
    case 0:
     exit(0);
    break;
 
+   default:
+   system("clear");
+   std::cout << "Not known!\n";
+   usleep(230000);
+   Startmenu();
   }  
   return(0);
  };

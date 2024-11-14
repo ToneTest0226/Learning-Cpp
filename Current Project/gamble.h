@@ -13,14 +13,23 @@ extern int cycleamnt;
 extern double guessnum;
 extern double abdistance;
 
+extern int menu();
+
 class Gamble{
  public:
 
-static int distance(){
-     abdistance = std::abs(randomnumber - guessnum);
-     return(0);
+static int moneyearned(){
+  std::cout << "not done!" << std::flush;
+  menu();
+  return(0);
+
 };
 
+static int distance(){
+     abdistance = std::abs(randomnumber - guessnum);
+      moneyearned();
+     return(0);
+};
 
 static int randomnum(){
    money -= 10; 
