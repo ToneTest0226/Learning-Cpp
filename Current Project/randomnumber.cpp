@@ -21,7 +21,7 @@ void guess();
 int menu(){
   int* menuans; 
   menuans = new int;
-  std::cout << "What would you like to do?" << "\n1: Gamble" << "\n2: Double for double" << "\n0: Exit" <<"\n Select:" << std::flush;
+  std::cout << "What would you like to do?" << "\nYour Cash:$" << money << "\n1: Gamble" << "\n2: Double for double" << "\n0: Exit" <<"\n Select:" << std::flush;
   std::cin >> *menuans;
   switch(*menuans){
    case 1:
@@ -63,10 +63,6 @@ if(guessnum >= 100){
   }
 }
 
-int tutorialwin(){
-     std::cout << '\n' << "You won!\n" << "You win $100 everythime you get the number.\n" << "You get more money the closer you are to it.\nIf you get the number, jackpot!" << std::endl;
-     return(0);
-}
 class MenuStart{
 public:
 
@@ -78,10 +74,10 @@ static int Startmenu(){
    case 1:
    Tutorial::tutorialstart();
    money += 100;
-   tutorialwin(); 
    break;
 
    case 2:
+   system("clear");
     menu();
    break;
 

@@ -8,18 +8,8 @@
 #include <cmath>
 double guessnumtut;
 double randomnumbertut;
-int tutorialwin();
-
-void randomnumtut(){
-   srand(time(0));
- do{
-  usleep(230000);
-  randomnumbertut = rand() % 100 + 1;
-  std::cout << '\r' << randomnumbertut << std::flush;
-  --cycleamnt;
-  } while(cycleamnt != 0);
-  std::cout << '\r' << guessnumtut << std::endl;
-};
+extern int menu();
+int randomnumtut();
 
 
 class Tutorial{
@@ -42,9 +32,24 @@ static int tutorialstart(){
          return(0);
 };
 
-static int tutorialwin(){
+static void tutorialwin(){
      std::cout << '\n' << "You won!\n" << "You win $100 everythime you get the number.\n" << "You get more money the closer you are to it.\nIf you get the number, jackpot!" << std::endl;
-     return(0);
+     std::cout << "Press enter to continue...";
+     std::cin.ignore();
+     std::cin.get();
+     menu();
+};
+
+static void randomnumtut(){
+   srand(time(0));
+ do{
+  usleep(230000);
+  randomnumbertut = rand() % 100 + 1;
+  std::cout << '\r' << randomnumbertut << std::flush;
+  --cycleamnt;
+  } while(cycleamnt != 0);
+  std::cout << '\r' << guessnumtut << std::endl;
+  tutorialwin();
 };
 
 }; // END OF CLASS
