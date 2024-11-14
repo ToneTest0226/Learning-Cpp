@@ -15,6 +15,7 @@ extern double guessnum;
 extern double abdistance;
 double k = 0.1;
 double jackpot = 100;
+extern int dfd;
 
 extern int menu();
 
@@ -30,9 +31,17 @@ static int distance(){
 static int moneyearned(){
   double earned = jackpot * std::exp(-k * abdistance);
   earned = std::round(earned);
-   std::cout << '\n' << "You won $"<< earned << "!" << std::endl;
-   money += earned;
-   menu();
+   if (dfd == true){
+    earned = earned * 2;
+     money += earned;  
+     std::cout << '\n' << "You won $"<< earned << "!" << std::endl;
+    menu();
+  }else {
+    money += earned;
+    std::cout << '\n' << "You won $"<< earned << "!" << std::endl;
+    menu(); 
+   }
+   
   return(0);
 };
 
@@ -40,7 +49,11 @@ static int moneyearned(){
 
 static int randomnum(){
   cycleamnt = 20;
-   money -= 10; 
+   if (dfd == true){
+    money -= 20;
+    } else{
+      money -=10;
+    }
    srand(time(0));
  do{
   usleep(230000);

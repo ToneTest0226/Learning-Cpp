@@ -19,9 +19,9 @@ static int tutorialstart(){
     system("clear");
         std::cout << "Put in a number, pick any one 1-100:";
         std::cin >> guessnumtut;
-         if(guessnumtut  >= 100){
+         if(guessnumtut  >= 100 || guessnumtut <= 0){
             system("clear");
-            std::cout << "The number is over 100!" << std::endl;
+            std::cout << "The number is not between 1-100!" << std::endl;
             sleep(1);
             system("clear");
             tutorialstart();
@@ -33,6 +33,7 @@ static int tutorialstart(){
 };
 
 static void tutorialwin(){
+  system("clear");
      std::cout << '\n' << "You won!\n" << "You win $100 everythime you get the number.\n" << "You get more money the closer you are to it.\nIf you get the number, jackpot!" << std::endl;
      std::cout << "Press enter to continue...";
      std::cin.ignore();

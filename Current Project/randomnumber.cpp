@@ -15,6 +15,7 @@ double money = 100;
 int cycleamnt = 20;
 double abdistance;
 double guessnum;
+int dfd = false;
  
 void guess();
 
@@ -29,8 +30,25 @@ int menu(){
    break;
 
    case 2:
-    std::cout << "Not done!" << std::endl;
-    menu();
+   if(dfd == false) {
+    system("clear");
+     std::cout << "Double for double ON!\n You will get double the money for double the money taken.";
+     std::cout << "\nPress enter to continue...";
+     std::cin.ignore();
+     std::cin.get();
+     system("clear");
+     dfd = true;
+     menu();
+   }else {
+    system("clear");
+    std::cout << "Double for double is OFF\n You will not get charged double or get double until you enable it again.";
+    std::cout << "\nPress enter to continue...";
+     std::cin.ignore();
+     std::cin.get();
+     system("clear");
+     dfd = false;
+     menu();
+   }
    break;
 
    case 0:
@@ -51,9 +69,9 @@ void guess(){
   std::cout << "Take a guess from 1-100:";
   std::cin >> guessnum;
   std::round(guessnum);
-if(guessnum >= 100){
+if(guessnum >= 100 || guessnum <= 0){
   system("clear");
-  std::cout << "The number is over 100!" << std::endl;
+  std::cout << "The number is not between 1-100!" << std::endl;
   sleep(1);
   system("clear");
   guess();
