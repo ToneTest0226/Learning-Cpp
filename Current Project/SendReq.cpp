@@ -14,6 +14,9 @@
 #include <vector>
 #include <chrono>
 #include "httplib.h"
+#include <queue>
+#include <functional>
+#include <condition_variable>
 
 
 //send requests to a pltw server, doing this for a class beacause mit app inventor is rotting my brain more than helping. 
@@ -32,6 +35,39 @@ int guessup();
 int randomnumberUP = 1000;
 int menuswitch;
 
+class threadpool{
+    public:
+    threadpool(size_t numthreads);
+    ~threadpool();
+    void enqueue(std::function<void()> task)
+
+    private:
+    std::vector<std::thread> workers;
+    std::queue<std::function<void()>> tasks;
+    std::mutex queueMutex;
+    std::condition_variable condition;
+    bool stop = false;
+};
+
+threadpool::threadpool(size_t numthreads){
+    for(size_t i = 0; i < numthreads; ++i)
+     workers.emplace_back([this]() {
+    while(true){
+        std::function<void()> task;
+        {
+            std::unique_lock<std::mutex> lock(this->queueMutex);
+            this->condition.wait(lock, [this]() { return this->stop || !this->tasks.empty();});
+            if (this->stop && this->tasks.empty())
+                return;
+            task = std::move(this->tasks.front());
+            this->tasks.pop();
+        }
+        task();
+    }
+    });
+}
+
+void threadpool::enqueue// ENDED HERE
 int menu(){
     std::cout << "What would you like?\n" << "1:Random Num\n" << "2:Up By One (1000 -> 1001)\n" << "3:Do both in threading" << "\n Select:";
     std::cin >> menuswitch;
