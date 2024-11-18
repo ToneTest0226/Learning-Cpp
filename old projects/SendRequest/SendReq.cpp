@@ -276,5 +276,6 @@ return(0);
 
 int main(){
 GetUserNameAndAmount(); 
+exit(0);
 return(0);
 }
